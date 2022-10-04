@@ -1,8 +1,8 @@
 package main
 
 import (
-	database "chatApp/database"
-	routes "chatApp/routes"
+	database "setup/database"
+	routes "setup/routes"
 )
 
 func main() {

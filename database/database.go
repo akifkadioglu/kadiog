@@ -1,10 +1,10 @@
 package database
 
 import (
-	"chatApp/env"
-	models "chatApp/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"setup/env"
+	models "setup/models"
 )
 
 var db *gorm.DB

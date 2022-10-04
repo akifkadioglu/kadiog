@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"chatApp/database"
 	"net/http"
+	"setup/database"
 
 	"github.com/labstack/echo/v4"
 )

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"chatApp/env"
+	"setup/env"
 
 	"github.com/labstack/echo/v4"
 )
