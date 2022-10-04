@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Web() *echo.Echo {
+func Web() {
 
 	E.GET("/index", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "index")
@@ -15,5 +15,4 @@ func Web() *echo.Echo {
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
-	return E
 }
