@@ -1,13 +1,9 @@
 package routes
 
 import (
-	jwt "github.com/golang-jwt/jwt"
-	"net/http"
+	"setup/adapter"
+	controller "setup/controllers"
 	authcontroller "setup/controllers/AuthController"
-	"setup/helpers"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func Api() {
@@ -17,17 +13,9 @@ func Api() {
 	api.POST("/register", authcontroller.Register)
 	api.POST("/login", authcontroller.Login)
 
+	//Auth Users
 	auth := api.Group("")
-	config := middleware.JWTConfig{
-		KeyFunc: helpers.GetKey,
-	}
-	auth.Use(middleware.JWTWithConfig(config))
-	auth.GET("/naber", restricted)
-	//api.POST("/login", authcontroller.Login)
-}
-func restricted(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	name := claims["name"].(string)
-	return c.String(http.StatusOK, "Welcome "+name+"!")
+	auth.Use(adapter.AuthAdapter())
+
+	auth.GET("/index", controller.Index)
 }

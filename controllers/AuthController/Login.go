@@ -10,6 +10,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 
 	"setup/database"
+	"setup/env"
 	models "setup/models"
 )
 
@@ -56,7 +57,7 @@ func Login(c echo.Context) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte("secret"))
+	t, err := token.SignedString([]byte(env.GoDotEnvVariable("APP_KEY")))
 	if err != nil {
 		return err
 	}
