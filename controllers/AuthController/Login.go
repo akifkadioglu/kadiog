@@ -35,7 +35,7 @@ func Login(c echo.Context) error {
 	//get user
 	db.Where("`username` = '" + input.Username + "'").Find(&user).First(&user)
 	if user.ID == 0 {
-		return echo.ErrNotFound
+		return c.JSON(http.StatusBadRequest, echo.ErrNotFound)
 	}
 	userPassword := []byte(user.Password)
 	password := []byte(input.Password)
@@ -47,7 +47,8 @@ func Login(c echo.Context) error {
 
 	// Set custom claims
 	var claims = &models.JwtCustomClaims{
-		Name: time.Now().Format("2006-01-02 15:04:05"),
+		Time: time.Now().Format("2006-01-02 15:04:05"),
+		Name: user.Name,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},
