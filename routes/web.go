@@ -7,10 +7,10 @@ import (
 )
 
 func Web() {
-	E.GET("/index", func(c echo.Context) error {
+	Network.GET("/index", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "index")
 	})
-	E.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+	Network.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
