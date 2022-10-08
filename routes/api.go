@@ -12,6 +12,7 @@ func Api() {
 	//Authenticate
 	api.POST("/register", authcontroller.Register)
 	api.POST("/login", authcontroller.Login)
+	api.POST("/forgot-password", authcontroller.ForgotPassword)
 
 	//Auth Users
 	auth := api.Group("")
