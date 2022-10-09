@@ -15,6 +15,6 @@ func Init() {
 	E.Use(middleware.Recover())
 	Api()
 	Web()
-	port := ":" + env.GoDotEnvVariable("APP_PORT")
-	E.Logger.Fatal(E.Start(port))
+	addr := env.GoDotEnvVariable("APP_HOST") + ":" + env.GoDotEnvVariable("APP_PORT")
+	E.Logger.Fatal(E.Start(addr))
 }
