@@ -1,24 +1,26 @@
 package database
 
 import (
+	"setup/helpers"
+	models "setup/models"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"setup/env"
-	models "setup/models"
 )
 
 var db *gorm.DB
 var err error
-var dbAddress = env.GoDotEnvVariable("DB_USERNAME") + ":" +
-	env.GoDotEnvVariable("DB_PASSWORD") +
+var dbAddress = helpers.GoDotEnvVariable("DB_USERNAME") + ":" +
+	helpers.GoDotEnvVariable("DB_PASSWORD") +
 	"@tcp(" +
-	env.GoDotEnvVariable("DB_HOST") +
+	helpers.GoDotEnvVariable("DB_HOST") +
 	":" +
-	env.GoDotEnvVariable("DB_PORT") +
-	")/"
+	helpers.GoDotEnvVariable("DB_PORT") +
+	")/" +
+	helpers.GoDotEnvVariable("DB_DATABASE")
 
 func Init() gorm.DB {
-	dns := dbAddress + env.GoDotEnvVariable("DB_DATABASE") + "?charset=utf8mb4&parseTime=True&loc=Local"
+	dns := dbAddress + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err = gorm.Open(mysql.Open(dns))
 	db.AutoMigrate(&models.User{})
 	if err != nil {

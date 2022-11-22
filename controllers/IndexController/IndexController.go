@@ -1,4 +1,4 @@
-package controllers
+package indexcontroller
 
 import (
 	"net/http"
@@ -7,5 +7,5 @@ import (
 )
 
 func Index(c echo.Context) error {
-	return c.JSON(http.StatusOK, "Welcome to index")
+	return c.String(http.StatusOK, "Welcome to index")
 }

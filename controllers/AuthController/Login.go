@@ -6,17 +6,14 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
-	"gopkg.in/go-playground/validator.v9"
-
 	"setup/database"
-	"setup/env"
 	"setup/helpers"
 	models "setup/models"
 )
 
 type LoginInput struct {
-	Username string `json:"username" gorm:"not null; size:60" validate:"required,min=3"`
-	Password string `json:"password" gorm:"not null" validate:"required,min=5"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 func Login(c echo.Context) error {
@@ -27,28 +24,32 @@ func Login(c echo.Context) error {
 	c.Bind(&input)
 
 	//validate inputs
-	err := loginValidate(c, input)
+	err := helpers.Validate(c, input)
 	if err != nil {
 		return err
 	}
 
-	//get user
-	db.Where("`username` = '" + input.Username + "'").Find(&user).First(&user)
-	if user.ID == 0 {
-		return c.JSON(http.StatusBadRequest, echo.ErrNotFound)
+	//check email
+	checkEmail := db.Where("email = '" + input.Email + "'").First(&user)
+	if checkEmail.RowsAffected == 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Password And Email Do Not Match",
+		})
 	}
 
 	err = helpers.CompareHash(user.Password, input.Password)
 	if err != nil {
-		return echo.ErrUnauthorized
-	}
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Password And Email Do Not Match",
+		})	}
 
 	// Set custom claims
 	var claims = &models.JwtCustomClaims{
-		Time: time.Now().Format("2006-01-02 15:04:05"),
-		Name: user.Name,
+		UserId: int(user.ID),
+		Time:   time.Now().Format("2006-01-02 15:04:05"),
+		Name:   user.Name,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 365).Unix(), // For 1 year permission
 		},
 	}
 
@@ -56,7 +57,7 @@ func Login(c echo.Context) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte(env.GoDotEnvVariable("APP_KEY")))
+	t, err := token.SignedString([]byte(helpers.GoDotEnvVariable("APP_KEY")))
 	if err != nil {
 		return err
 	}
@@ -64,14 +65,4 @@ func Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": t,
 	})
-}
-
-func loginValidate(c echo.Context, input LoginInput) error {
-
-	v := validator.New()
-
-	if err := v.Struct(input); err != nil {
-		return err
-	}
-	return nil
 }

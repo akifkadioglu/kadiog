@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"setup/env"
 	"fmt"
 	"strconv"
 
@@ -10,12 +9,12 @@ import (
 
 func SendEmail(To, Subject, Body string) {
 	mail := gomail.NewMessage()
-	mail.SetHeader("From", env.GoDotEnvVariable("MAIL_FROM_ADDRESS"))
+	mail.SetHeader("From", GoDotEnvVariable("MAIL_FROM_ADDRESS"))
 	mail.SetHeader("To", To)
 	mail.SetHeader("Subject", Subject)
 	mail.SetBody("text/plain", Body)
-	mailPort, _ := strconv.Atoi(env.GoDotEnvVariable("MAIL_PORT"))
-	send := gomail.NewDialer(env.GoDotEnvVariable("MAIL_HOST"), mailPort, env.GoDotEnvVariable("MAIL_FROM_ADDRESS"), env.GoDotEnvVariable("MAIL_PASSWORD"))
+	mailPort, _ := strconv.Atoi(GoDotEnvVariable("MAIL_PORT"))
+	send := gomail.NewDialer(GoDotEnvVariable("MAIL_HOST"), mailPort, GoDotEnvVariable("MAIL_FROM_ADDRESS"), GoDotEnvVariable("MAIL_PASSWORD"))
 	err := send.DialAndSend(mail)
 	if err != nil {
 		fmt.Println(err.Error())
