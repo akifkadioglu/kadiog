@@ -3,7 +3,7 @@ package routes
 import (
 	"setup/adapter"
 	authcontroller "setup/controllers/AuthController"
-	indexcontroller "setup/controllers/Indexcontroller"
+	indexcontroller "setup/controllers/IndexController"
 
 	"github.com/labstack/echo/v4"
 )
