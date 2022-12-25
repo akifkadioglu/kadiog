@@ -41,7 +41,8 @@ func Login(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Password And Email Do Not Match",
-		})	}
+		})	
+	}
 
 	// Set custom claims
 	var claims = &models.JwtCustomClaims{
