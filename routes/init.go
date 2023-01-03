@@ -1,16 +1,15 @@
 package routes
 
 import (
-	"setup/adapter"
-	"setup/helpers"
-	_ "net/http/pprof"
 	"net/http"
-	
+	_ "net/http/pprof"
+	"setup/adapter"
+	"setup/environment"
+	"setup/helpers"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	
 )
-
 
 func Init() {
 	var E = echo.New()
@@ -21,7 +20,7 @@ func Init() {
 	}))
 	Web(Network)
 	E.GET("/debug/*", echo.WrapHandler(http.DefaultServeMux))
-	port := helpers.GoDotEnvVariable("HOST") + ":" + helpers.GoDotEnvVariable("PORT")
+	port := helpers.GoDotEnvVariable(environment.HOST) + ":" + helpers.GoDotEnvVariable(environment.PORT)
 	if port == ":" {
 		port = "0.0.0.0:9000" // Default port if not specified
 	}

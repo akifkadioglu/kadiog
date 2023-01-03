@@ -18,7 +18,7 @@ type Sqlite struct {
 }
 
 func Init() {
-	var dbBuilder Idatabase = &Sqlite{db: db}
+	var dbBuilder Idatabase = &MySql{db: db}
 	db = dbBuilder.main()
 }
 

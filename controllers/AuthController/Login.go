@@ -4,11 +4,15 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
+	variables "setup/controllers/Variables"
 	"setup/database"
+	"setup/environment"
 	"setup/helpers"
 	models "setup/models"
+	language "setup/resources/Language"
+
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 )
 
 type LoginInput struct {
@@ -23,28 +27,22 @@ func Login(c echo.Context) error {
 	db := database.DBManager()
 	c.Bind(&input)
 
-	//validate inputs
-	err := helpers.Validate(c, input)
-	if err != nil {
+	if err := helpers.Validate(c, input); err != nil {
 		return err
 	}
 
-	//check email
-	checkEmail := db.Where("email = '" + input.Email + "'").First(&user)
-	if checkEmail.RowsAffected == 0 {
+	if err := db.Where("email = ?", input.Email).First(&user); err.RowsAffected == 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "Password And Email Do Not Match",
+			variables.MESSAGE: helpers.TR(language.PASSWORD_AND_EMAIL_DONT_MATCH, c),
 		})
 	}
 
-	err = helpers.CompareHash(user.Password, input.Password)
-	if err != nil {
+	if err := helpers.CompareHash(user.Password, input.Password); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"message": "Password And Email Do Not Match",
-		})	
+			variables.MESSAGE: helpers.TR(language.PASSWORD_AND_EMAIL_DONT_MATCH, c),
+		})
 	}
 
-	// Set custom claims
 	var claims = &models.JwtCustomClaims{
 		UserId: int(user.ID),
 		Time:   time.Now().Format("2006-01-02 15:04:05"),
@@ -54,16 +52,14 @@ func Login(c echo.Context) error {
 		},
 	}
 
-	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte(helpers.GoDotEnvVariable("APP_KEY")))
+	t, err := token.SignedString([]byte(helpers.GoDotEnvVariable(environment.APP_KEY)))
 	if err != nil {
 		return err
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"token": t,
+		variables.TOKEN: t,
 	})
 }

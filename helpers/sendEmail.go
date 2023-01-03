@@ -1,22 +1,25 @@
 package helpers
 
 import (
-	"fmt"
+	"setup/environment"
 	"strconv"
 
 	gomail "gopkg.in/mail.v2"
 )
 
-func SendEmail(To, Subject, Body string) {
+func SendEmail(To, Subject, Body string) error {
+
 	mail := gomail.NewMessage()
-	mail.SetHeader("From", GoDotEnvVariable("MAIL_FROM_ADDRESS"))
+
+	mail.SetHeader("From", GoDotEnvVariable(environment.MAIL_FROM_ADDRESS))
 	mail.SetHeader("To", To)
 	mail.SetHeader("Subject", Subject)
-	mail.SetBody("text/plain", Body)
-	mailPort, _ := strconv.Atoi(GoDotEnvVariable("MAIL_PORT"))
-	send := gomail.NewDialer(GoDotEnvVariable("MAIL_HOST"), mailPort, GoDotEnvVariable("MAIL_FROM_ADDRESS"), GoDotEnvVariable("MAIL_PASSWORD"))
-	err := send.DialAndSend(mail)
-	if err != nil {
-		fmt.Println(err.Error())
+	mail.SetBody("text/html", Body)
+	mailPort, _ := strconv.Atoi(GoDotEnvVariable(environment.MAIL_PORT))
+	send := gomail.NewDialer(GoDotEnvVariable(environment.MAIL_HOST), mailPort, GoDotEnvVariable(environment.MAIL_FROM_ADDRESS), GoDotEnvVariable(environment.MAIL_PASSWORD))
+
+	if err := send.DialAndSend(mail); err != nil {
+		return err
 	}
+	return nil
 }

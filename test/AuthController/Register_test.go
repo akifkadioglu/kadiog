@@ -10,15 +10,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLogin(t *testing.T) {
+func TestRegister(t *testing.T) {
 
 	database.Init()
 
-	json := `{"email":"akifkadioglu@yaani.com","password":"deneme1"}`
+	json := `{"email":"akifkadioglu@yaani.com","name":"akif","password":"deneme1","password_confirmation":"deneme1","username":"akif"}`
 
 	c, rec := testinitializer.Method(http.MethodPost, json)
 
-	if assert.NoError(t, authcontroller.Login(c)) {
+	if assert.NoError(t, authcontroller.Register(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 	}
 }
