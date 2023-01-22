@@ -8,7 +8,7 @@ var db *gorm.DB
 var err error
 
 type Idatabase interface {
-	main() *gorm.DB
+	main()
 }
 type MySql struct {
 	db *gorm.DB
@@ -18,8 +18,7 @@ type Sqlite struct {
 }
 
 func Init() {
-	var dbBuilder Idatabase = &MySql{db: db}
-	db = dbBuilder.main()
+	Idatabase.main(&MySql{db: db})
 }
 
 func DBManager() gorm.DB {
