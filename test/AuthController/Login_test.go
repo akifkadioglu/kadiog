@@ -3,7 +3,6 @@ package authcontroller_test
 import (
 	"net/http"
 	authcontroller "setup/controllers/AuthController"
-	"setup/database"
 	"setup/test"
 	"testing"
 
@@ -11,9 +10,8 @@ import (
 )
 
 func TestLogin(t *testing.T) {
-
-	database.Init()
-
+	testinitializer.Starter()
+	
 	json := `{"email":"akifkadioglu@yaani.com","password":"deneme1"}`
 
 	c, rec := testinitializer.Method(http.MethodPost, json)

@@ -6,10 +6,11 @@ import (
 
 	variables "setup/controllers/Variables"
 	"setup/database"
-	"setup/environment"
+	"setup/env"
 	"setup/helpers"
 	models "setup/models"
 	language "setup/resources/Language"
+	"setup/localization"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -33,13 +34,13 @@ func Login(c echo.Context) error {
 
 	if err := db.Where("email = ?", input.Email).First(&user); err.RowsAffected == 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			variables.MESSAGE: helpers.TR(language.PASSWORD_AND_EMAIL_DONT_MATCH, c),
+			variables.MESSAGE: localization.TR(language.PASSWORD_AND_EMAIL_DONT_MATCH, c),
 		})
 	}
 
 	if err := helpers.CompareHash(user.Password, input.Password); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			variables.MESSAGE: helpers.TR(language.PASSWORD_AND_EMAIL_DONT_MATCH, c),
+			variables.MESSAGE: localization.TR(language.PASSWORD_AND_EMAIL_DONT_MATCH, c),
 		})
 	}
 
@@ -54,7 +55,7 @@ func Login(c echo.Context) error {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	t, err := token.SignedString([]byte(helpers.GoDotEnvVariable(environment.APP_KEY)))
+	t, err := token.SignedString([]byte(env.Getenv(env.APP_KEY)))
 	if err != nil {
 		return err
 	}

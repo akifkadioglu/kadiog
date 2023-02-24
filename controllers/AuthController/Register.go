@@ -5,6 +5,7 @@ import (
 	variables "setup/controllers/Variables"
 	"setup/database"
 	"setup/helpers"
+	"setup/localization"
 	"setup/models"
 	language "setup/resources/Language"
 	emails "setup/resources/Views/Emails"
@@ -39,13 +40,13 @@ func Register(c echo.Context) error {
 	checkEmail := db.Where("email = ?", input.Email).Find(&user)
 	if checkEmail.RowsAffected > 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			variables.MESSAGE: helpers.TR(language.EMAIL_ALREADY_EXIST, c),
+			variables.MESSAGE: localization.TR(language.EMAIL_ALREADY_EXIST, c),
 		})
 	}
 
 	if input.Password != input.PasswordConfirmation {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			variables.MESSAGE: helpers.TR(language.PASSWORDS_DONT_MATCH, c),
+			variables.MESSAGE: localization.TR(language.PASSWORDS_DONT_MATCH, c),
 		})
 	}
 
@@ -56,13 +57,13 @@ func Register(c echo.Context) error {
 
 	if err := db.Create(&user); err.Error != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			variables.MESSAGE: helpers.TR(language.SOMETHING_WENT_WRONG, c),
+			variables.MESSAGE: localization.TR(language.SOMETHING_WENT_WRONG, c),
 		})
 	}
-	
-	if err := helpers.SendEmail(user.Email, helpers.TR(language.NEW_ACCOUNT, c), emails.Register(user.Name, c)); err != nil {
+
+	if err := helpers.SendEmail(user.Email, localization.TR(language.NEW_ACCOUNT, c), emails.Register(user.Name, c)); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			variables.MESSAGE: helpers.TR(language.SOMETHING_WENT_WRONG, c),
+			variables.MESSAGE: localization.TR(language.SOMETHING_WENT_WRONG, c),
 		})
 	}
 

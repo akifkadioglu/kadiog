@@ -10,7 +10,8 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	
+	testinitializer.Starter()
+
 	c, rec := testinitializer.Method(http.MethodGet, "")
 
 	if assert.NoError(t, indexcontroller.Index(c)) {

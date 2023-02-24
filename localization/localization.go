@@ -1,4 +1,4 @@
-package helpers
+package localization
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ const (
 	ENGLISH string = "en"
 )
 
-func init() {
+func Init() {
 	bundle = i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 	bundle.LoadMessageFile("resources/Language/en.json")

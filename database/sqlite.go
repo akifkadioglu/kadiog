@@ -1,8 +1,7 @@
 package database
 
 import (
-	"setup/environment"
-	"setup/helpers"
+	"setup/env"
 	models "setup/models"
 
 	"gorm.io/driver/sqlite"
@@ -16,7 +15,7 @@ If you are using Windows
 */
 
 func (d *SQLite) main() {
-	db, err = gorm.Open(sqlite.Open("./database/"+helpers.GoDotEnvVariable(environment.DB_DATABASE)+".db"), &gorm.Config{
+	db, err = gorm.Open(sqlite.Open("./database/"+env.Getenv(env.DB_DATABASE)+".db"), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	db.AutoMigrate(&models.User{})

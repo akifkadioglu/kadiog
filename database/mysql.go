@@ -1,8 +1,7 @@
 package database
 
 import (
-	"setup/environment"
-	"setup/helpers"
+	"setup/env"
 	models "setup/models"
 
 	"gorm.io/driver/mysql"
@@ -10,7 +9,7 @@ import (
 )
 
 func (d *Mysql) main() {
-	var dns = helpers.GoDotEnvVariable(environment.DB_USERNAME) + ":" + helpers.GoDotEnvVariable(environment.DB_PASSWORD) + "@tcp(" + helpers.GoDotEnvVariable(environment.DB_HOST) + ":" + helpers.GoDotEnvVariable(environment.DB_PORT) + ")/" + helpers.GoDotEnvVariable(environment.DB_DATABASE) + "?charset=utf8mb4&parseTime=True&loc=Local"
+	var dns = env.Getenv(env.DB_USERNAME) + ":" + env.Getenv(env.DB_PASSWORD) + "@tcp(" + env.Getenv(env.DB_HOST) + ":" + env.Getenv(env.DB_PORT) + ")/" + env.Getenv(env.DB_DATABASE) + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	db, err = gorm.Open(mysql.Open(dns))
 	db.AutoMigrate(&models.User{})

@@ -3,7 +3,6 @@ package authcontroller_test
 import (
 	"net/http"
 	authcontroller "setup/controllers/AuthController"
-	"setup/database"
 	"setup/test"
 	"testing"
 
@@ -11,8 +10,7 @@ import (
 )
 
 func TestRegister(t *testing.T) {
-
-	database.Init()
+	testinitializer.Starter()
 
 	json := `{"email":"akifkadioglu@yaani.com","name":"akif","password":"deneme1","password_confirmation":"deneme1","username":"akif"}`
 
