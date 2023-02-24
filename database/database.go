@@ -10,15 +10,13 @@ var err error
 type Idatabase interface {
 	main()
 }
-type MySql struct {
-	db *gorm.DB
-}
-type Sqlite struct {
-	db *gorm.DB
-}
+
+type Mysql struct{}
+type SQLite struct{}
 
 func Init() {
-	Idatabase.main(&MySql{db: db})
+	var database Mysql //If you want to use SQLite, write SQLite instead of Mysql.
+	Idatabase.main(&database)
 }
 
 func DBManager() gorm.DB {

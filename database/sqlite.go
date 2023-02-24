@@ -15,7 +15,7 @@ If you are using Windows
 	- Install GCC
 */
 
-func (d *Sqlite) main() {
+func (d *SQLite) main() {
 	db, err = gorm.Open(sqlite.Open("./database/"+helpers.GoDotEnvVariable(environment.DB_DATABASE)+".db"), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
